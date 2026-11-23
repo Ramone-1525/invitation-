@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>शुभ विवाह</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+:root{
+  --maroon:#3f4d36; --maroon-d:#26321f; --gold:#b9a46a; --gold-l:#ece0bb;
+  --cream:#f6f1e6; --ink:#27301f;
+  --serif:'Cormorant Garamond','Tiro Devanagari Hindi',Georgia,serif;
+  --deva:'Tiro Devanagari Hindi',serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--serif);background:var(--cream);color:var(--ink);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body.locked{overflow:hidden;height:100%}
+
+/* ---------- PROGRESS ---------- */
+#progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:50;transform:scaleX(0);transform-origin:left;background:linear-gradient(90deg,var(--gold),var(--maroon))}
+
+/* ---------- MUSIC ---------- */
+#musicBtn{position:fixed;right:16px;bottom:18px;z-index:60;width:46px;height:46px;border-radius:50%;border:1px solid var(--gold);background:rgba(253,247,236,.92);color:var(--maroon);font-size:18px;cursor:pointer;box-shadow:0 8px 20px rgba(63,14,22,.25);display:none}
+#musicBtn.show{display:block}
+#musicBtn.on{animation:spin 6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- GATE ---------- */
+#gate{position:fixed;inset:0;z-index:100;perspective:1600px;background:var(--maroon-d);overflow:hidden}
+.light{position:absolute;inset:0;opacity:0;pointer-events:none;background:radial-gradient(ellipse 60% 70% at 50% 50%,#fff3c9 0%,#e9b85a 35%,rgba(63,14,22,0) 75%)}
+.door{position:absolute;top:0;height:100%;width:50%;overflow:hidden;
+  background:
+    repeating-linear-gradient(90deg,transparent 0 17%,rgba(0,0,0,.35) 17% 18.5%,transparent 18.5% 50%),
+    repeating-linear-gradient(0deg,transparent 0 21%,rgba(0,0,0,.28) 21% 22.5%,transparent 22.5% 45%),
+    linear-gradient(165deg,#5b6e52,#3d4c36 55%,#243020);
+  box-shadow:inset 0 0 80px rgba(0,0,0,.65);backface-visibility:hidden}
+.door.left{left:0;border-right:2px solid var(--gold);transform-origin:left center;border-radius:50% 0 0 0/16% 0 0 0}
+.door.right{right:0;border-left:2px solid var(--gold);transform-origin:right center;border-radius:0 50% 0 0/16% 0 0 0}
+.door::after{content:"";position:absolute;top:50%;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff3c9,#b8862e);box-shadow:0 2px 4px #000;transform:translateY(-50%)}
+.door.left::after{right:14px}
+.door.right::after{left:14px}
+.gate-title{position:absolute;top:8%;left:0;right:0;text-align:center;font-family:var(--deva);color:var(--gold-l);font-size:20px;letter-spacing:1px;text-shadow:0 2px 10px #000;z-index:3}
+.gate-btn{position:absolute;left:50%;top:50%;z-index:4;width:150px;height:150px;margin:-75px 0 0 -75px;border:none;border-radius:50%;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 35% 30%,#fff3c9,#c9a24a 60%,#7d5a1a);box-shadow:0 0 0 6px rgba(201,162,74,.25),0 0 60px rgba(255,220,130,.5)}
+.gate-btn svg{width:96px;height:96px;pointer-events:none}
+.gate-btn span{font-family:var(--deva);font-size:13px;color:var(--maroon-d);margin-top:-6px}
+.gate-hint{position:absolute;bottom:9%;left:0;right:0;text-align:center;color:var(--gold-l);font-style:italic;letter-spacing:2px;font-size:15px;z-index:3;opacity:.8}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;height:100vh;min-height:600px;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;background:radial-gradient(ellipse at 50% 0%,#fff9ee 0%,var(--cream) 55%,#f6e7d2 100%)}
+#petals{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.hero-bg{position:absolute;inset:-12% 0;pointer-events:none;z-index:0;will-change:transform;
+  background:radial-gradient(circle at 18% 18%,rgba(201,162,74,.22) 0 90px,transparent 91px),radial-gradient(circle at 84% 82%,rgba(201,162,74,.2) 0 120px,transparent 121px),radial-gradient(circle at 50% 45%,rgba(244,215,208,.5),transparent 60%)}
+#glow{position:absolute;left:0;top:0;width:360px;height:360px;margin:-180px 0 0 -180px;border-radius:50%;pointer-events:none;z-index:1;background:radial-gradient(circle,rgba(201,162,74,.22),transparent 65%)}
+.hero-inner{position:relative;z-index:2;padding:0 20px}
+.om{font-family:var(--deva);font-size:64px;color:var(--maroon);line-height:1}
+.hero-tag{font-family:var(--deva);font-size:18px;color:var(--gold);letter-spacing:2px;margin-top:10px}
+.names-box{position:relative;margin:26px auto 0;padding:26px 30px;max-width:520px}
+.frame{position:absolute;inset:-6px;width:calc(100% + 12px);height:calc(100% + 12px);fill:none;stroke:var(--gold);stroke-width:1.6;overflow:visible}
+.frame rect{stroke-dasharray:1;stroke-dashoffset:0}
+.names{font-size:clamp(40px,9vw,56px);font-style:italic;line-height:1.15}
+.names .amp{display:block;font-size:30px;color:var(--gold);font-style:normal;margin:4px 0}
+.scroll-hint{position:absolute;bottom:26px;left:0;right:0;z-index:2;font-size:13px;letter-spacing:4px;color:var(--maroon);text-transform:uppercase}
+.scroll-line{display:block;width:1px;height:38px;margin:10px auto 0;background:linear-gradient(var(--gold),transparent)}
+
+/* ---------- CINEMATIC LAYER ---------- */
+/* gate: slow rotating light rays */
+#gate::after{content:"";position:absolute;left:50%;top:50%;width:120vmax;height:120vmax;margin:-60vmax 0 0 -60vmax;pointer-events:none;z-index:2;opacity:.16;background:repeating-conic-gradient(from 0deg,rgba(255,236,170,.9) 0 3deg,transparent 3deg 18deg);-webkit-mask:radial-gradient(circle,#000 0,transparent 55%);mask:radial-gradient(circle,#000 0,transparent 55%);animation:rays 24s linear infinite}
+@keyframes rays{to{transform:rotate(360deg)}}
+/* gate: golden dust motes */
+.dust{position:absolute;width:3px;height:3px;border-radius:50%;pointer-events:none;z-index:3;background:radial-gradient(circle,#fff6d2,#e2b35a 60%,transparent 70%);animation:dust var(--d,9s) ease-in-out var(--dl,0s) infinite;opacity:0}
+@keyframes dust{0%,100%{opacity:0;transform:translate3d(0,0,0) scale(.6)}30%{opacity:.9}60%{opacity:.35;transform:translate3d(var(--dx,20px),-40px,0) scale(1)}}
+/* hero: faint light rays behind the names */
+.hero::before{content:"";position:absolute;left:50%;top:-10%;width:120vmax;height:120vmax;margin-left:-60vmax;pointer-events:none;z-index:0;opacity:.3;background:repeating-conic-gradient(from 0deg,rgba(255,240,200,.55) 0 2deg,transparent 2deg 20deg);-webkit-mask:radial-gradient(circle at 50% 40%,#000 0,transparent 45%);mask:radial-gradient(circle at 50% 40%,#000 0,transparent 45%);animation:rays 40s linear infinite}
+.frame{filter:drop-shadow(0 0 6px rgba(245,220,150,.5))}
+/* names: letter-level reveal */
+.ch{display:inline-block;will-change:transform,opacity}
+/* buttons: tactile press + moving sheen */
+.btn{position:relative;overflow:hidden}
+.btn::after{content:"";position:absolute;top:0;bottom:0;left:-75%;width:45%;pointer-events:none;background:linear-gradient(100deg,transparent,rgba(255,255,255,.65),transparent);transform:skewX(-20deg);animation:shine 4s ease-in-out infinite}
+@keyframes shine{0%,55%{left:-75%}100%{left:130%}}
+.btn:active{transform:scale(.96)!important}
+/* cards and tiles: soft hover depth (desktop) */
+.event{transition:box-shadow .6s ease,border-color .6s ease}
+.tile{transition:box-shadow .8s ease}
+@media (hover:hover){
+  .event:hover{box-shadow:0 22px 44px rgba(122,31,43,.14),0 0 0 1px rgba(201,162,74,.5);border-color:rgba(201,162,74,.8)}
+  .tile:hover{box-shadow:0 0 0 2px rgba(201,162,74,.55),0 0 28px rgba(245,220,150,.4)}
+}
+@media (max-width:600px){ .hero::before{display:none} .frame{filter:none} }
+@media (prefers-reduced-motion: reduce){ #gate::after,.hero::before,.btn::after{animation:none!important;display:none} .dust{display:none} }
+
+/* touch/click ripple on buttons */
+.gate-btn{overflow:hidden}
+.ripple{position:absolute;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:rgba(255,246,210,.6);transform:scale(0);opacity:1;pointer-events:none;animation:ripple .7s ease-out forwards}
+@keyframes ripple{to{transform:scale(22);opacity:0}}
+/* ornament diamond: gentle golden breathing */
+.orn .dia{animation:gleam 3.2s ease-in-out infinite}
+@keyframes gleam{0%,100%{filter:drop-shadow(0 0 0 rgba(245,220,150,0))}50%{filter:drop-shadow(0 0 6px rgba(245,220,150,.9))}}
+/* venue card: slow foil sheen */
+.venue::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:28px;background:linear-gradient(115deg,transparent 40%,rgba(255,240,200,.14) 50%,transparent 60%) 0 0/250% 100%;animation:foil 7s ease-in-out infinite}
+@keyframes foil{0%{background-position:100% 0}100%{background-position:-100% 0}}
+@media (prefers-reduced-motion: reduce){ .orn .dia,.venue::after{animation:none!important} }
+
+/* botanical sprigs in hero corners */
+.sprig{position:absolute;width:150px;height:auto;z-index:1;pointer-events:none;fill:none;stroke:#5b6e52;stroke-width:1.6;stroke-linecap:round;overflow:visible}
+.sprig.tl{top:-6px;left:-6px}
+.sprig.br{bottom:-6px;right:-6px;transform:rotate(180deg)}
+.sprig .draw{stroke-dasharray:1;stroke-dashoffset:0}
+.sprig .leaf{fill:#a9b99a;stroke:#5b6e52;stroke-width:1.1}
+.sprig .bloom{fill:#f6efe0;stroke:#c9928a;stroke-width:1.1}
+.sprig .core{fill:#b9a46a;stroke:none}
+/* names: a slow sheen of gold across the letters */
+.names{background:linear-gradient(100deg,var(--maroon) 40%,var(--gold) 50%,var(--maroon) 60%) 0 0/250% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:nameSheen 7s ease-in-out infinite}
+.names .amp{-webkit-text-fill-color:var(--gold);color:var(--gold)}
+@keyframes nameSheen{0%{background-position:100% 0}50%{background-position:-100% 0}100%{background-position:100% 0}}
+@media (max-width:600px){ .sprig{width:104px} }
+@media (prefers-reduced-motion: reduce){ .names{animation:none} }
+
+/* ---------- SECTIONS ---------- */
+section{position:relative;padding:100px 24px;max-width:780px;margin:0 auto;text-align:center}
+.kicker{font-size:13px;letter-spacing:5px;text-transform:uppercase;color:var(--gold)}
+h2{font-family:var(--deva);font-size:clamp(26px,5vw,34px);color:var(--maroon);margin:12px 0 22px;font-weight:400}
+.sw{display:inline-block;margin-right:.25em}
+.orn{width:220px;height:26px;margin:18px auto 26px}
+.orn svg{width:100%;height:100%;fill:none;stroke:var(--gold);stroke-width:1.4}
+.orn path{stroke-dasharray:1;stroke-dashoffset:0}
+.orn .dia{fill:var(--gold)}
+.msg{font-size:clamp(20px,3.6vw,25px);line-height:1.75}
+.msg .w{display:inline-block;margin:0 .12em;opacity:.15}
+.date-line{font-family:var(--deva);font-size:20px;color:var(--maroon);margin-top:24px}
+.countdown{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:34px}
+.cd{background:linear-gradient(180deg,#fffdf7,#f1ead8);border:1px solid rgba(185,164,106,.7);border-radius:46px 46px 22px 22px/34px 34px 22px 22px;padding:20px 14px 16px;min-width:88px;box-shadow:0 12px 26px rgba(38,50,31,.12)}
+.cd b{display:block;font-size:34px;font-weight:600;color:var(--maroon);font-variant-numeric:tabular-nums}
+.cd small{font-family:var(--deva);font-size:12px;letter-spacing:1px;color:var(--gold)}
+
+/* timeline */
+.timeline{position:relative;margin-top:50px;text-align:left}
+.track{position:absolute;left:24px;top:0;bottom:0;width:2px;background:rgba(201,162,74,.25)}
+.track-fill{position:absolute;left:24px;top:0;bottom:0;width:2px;background:linear-gradient(var(--gold),var(--maroon));transform-origin:top;transform:scaleY(0)}
+.event{position:relative;margin:0 0 34px 64px;background:#fff;border-radius:20px;padding:24px;border:1px solid rgba(201,162,74,.4);box-shadow:0 14px 34px rgba(122,31,43,.08);transform-style:preserve-3d}
+.event::before{content:"";position:absolute;left:-51px;top:30px;width:16px;height:16px;border-radius:50%;background:var(--cream);border:2px solid var(--gold);box-shadow:0 0 0 5px var(--cream)}
+.event .icon{font-size:30px}
+.event h3{font-family:var(--deva);font-size:24px;font-weight:400;color:var(--maroon);margin-top:4px}
+.event .when{font-size:18px;opacity:.85;margin-top:4px}
+
+/* gallery */
+.gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:40px}
+.tile{position:relative;aspect-ratio:3/4;border-radius:16px;overflow:hidden;cursor:pointer;background:linear-gradient(160deg,#e6ebdc,#cdd8c0);display:flex;align-items:center;justify-content:center;font-family:var(--deva);color:var(--maroon);font-size:15px}
+.tile:nth-child(3n){grid-column:span 2;aspect-ratio:16/10}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.tile:hover img{transform:scale(1.04)}
+.tile::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 55%,rgba(63,14,22,.45))}
+
+/* venue */
+.venue{background:linear-gradient(155deg,#5b6b50,var(--maroon-d));color:var(--gold-l);border-radius:28px;padding:50px 26px;position:relative;overflow:hidden;box-shadow:0 30px 60px rgba(63,14,22,.35)}
+.venue::before{content:"";position:absolute;inset:14px;border:1px solid rgba(201,162,74,.5);border-radius:22px;pointer-events:none}
+.venue h2{color:var(--gold-l)}
+.venue p{font-size:19px;line-height:1.6}
+.btn{display:inline-block;margin-top:24px;padding:14px 34px;border-radius:50px;background:linear-gradient(135deg,#f5e6b8,var(--gold));color:var(--maroon-d);text-decoration:none;font-weight:600;font-size:18px;box-shadow:0 10px 24px rgba(0,0,0,.25)}
+
+footer{padding:60px 20px 90px;text-align:center;color:var(--maroon)}
+footer .names-foot{font-family:var(--deva);font-size:22px}
+footer small{display:block;margin-top:10px;opacity:.7;font-size:15px}
+.temple-art{margin:0 auto 28px;width:min(340px,86%)}
+.temple-art svg{display:block;width:100%;height:auto;fill:none;stroke:#a88b4a;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+.temple-art .draw{stroke-dasharray:1;stroke-dashoffset:0}
+.temple-art .fill{fill:#efe2c2;stroke:#a88b4a}
+.temple-art .lotus{fill:#f3d9d3;stroke:#c9928a}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+</style>
+</head>
+<body class="locked">
+
+<!-- ================= CONFIG: अपनी जानकारी यहाँ बदलें ================= -->
+<script>
+const CONFIG = {
+  groom: "वर का नाम",
+  bride: "वधू का नाम",
+  tagline: "श्री गणेश जी की कृपा से",
+  invite: "शुभ विवाह",
+  message: "परिवार की ओर से आप सभी को सादर आमंत्रण। आपके आशीर्वाद और उपस्थिति से हमारा यह उत्सव पूर्ण होगा।",
+  weddingDate: "2026-12-20T18:00:00+05:30",
+  dateText: "रविवार, 20 दिसंबर 2026",
+  events: [
+    { icon: "🌿", name: "मेहंदी", when: "19 दिसंबर 2026 · शाम 7 बजे से" },
+    { icon: "🌼", name: "हल्दी", when: "20 दिसंबर 2026 · सुबह 10 बजे से" },
+    { icon: "🪔", name: "विवाह", when: "20 दिसंबर 2026 · शाम 6 बजे से" }
+  ],
+  // फ़ोटो के लिए: { src: "https://...jpg", alt: "विवरण" } जोड़ें। खाली हो तो placeholder दिखेंगे।
+  gallery: [],
+  // गाने का लिंक (mp3) दें। खाली हो तो music बटन नहीं दिखेगा।
+  music: "",
+  venue: "स्थल का नाम",
+  address: "पता यहाँ लिखें, शहर, राज्य",
+  mapQuery: "Wedding+Venue+Address",
+  rsvpFrom: "परिवार का नाम",
+  phone: "+919999999999",
+  phoneText: "+91 99999 99999"
+};
+</script>
+
+<div id="progress"></div>
+<button id="musicBtn" aria-label="संगीत चालू/बंद करें">♪</button>
+<audio id="bgm" loop preload="none"></audio>
+
+<!-- ================= GATE ================= -->
+<div id="gate">
+  <div class="light"></div>
+  <div class="door left"></div>
+  <div class="door right"></div>
+  <div class="gate-title" id="gateTitle"></div>
+  <button class="gate-btn" id="openBtn" aria-label="दरवाज़ा खोलें">
+    <svg viewBox="0 0 120 120" aria-hidden="true">
+      <path d="M44 34 L50 14 L60 26 L70 14 L76 34 Z" fill="#8a3340"/>
+      <circle cx="60" cy="27" r="3" fill="#f5e6b8"/>
+      <ellipse cx="30" cy="58" rx="13" ry="22" fill="#e9a93a" stroke="#7a4a10" stroke-width="2"/>
+      <ellipse cx="90" cy="58" rx="13" ry="22" fill="#e9a93a" stroke="#7a4a10" stroke-width="2"/>
+      <circle cx="60" cy="58" r="30" fill="#f6c453" stroke="#7a4a10" stroke-width="2"/>
+      <path d="M60 70 q-8 14 4 22 q9 6 3 14" fill="none" stroke="#d98c1f" stroke-width="7" stroke-linecap="round"/>
+      <path d="M68 82 q7 4 3 11" fill="none" stroke="#fff8e6" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="50" cy="50" r="3" fill="#3b1a1f"/>
+      <circle cx="70" cy="50" r="3" fill="#3b1a1f"/>
+      <circle cx="60" cy="40" r="3.5" fill="#b3263a"/>
+    </svg>
+    <span>यहाँ छूएँ</span>
+  </button>
+  <div class="gate-hint">Tap to open</div>
+</div>
+
+<!-- ================= HERO ================= -->
+<header class="hero" id="top">
+  <canvas id="petals"></canvas>
+  <svg class="sprig tl" viewBox="0 0 160 220" aria-hidden="true">
+    <path class="draw" pathLength="1" d="M20 210 C30 150 60 110 120 40"/>
+    <g transform="translate(40,160) rotate(-40)"><path class="leaf" d="M0 0 C8 -10 8 -28 0 -36 C-8 -28 -8 -10 0 0Z"/></g>
+    <g transform="translate(40,160) rotate(30)"><path class="leaf" d="M0 0 C8 -10 8 -28 0 -36 C-8 -28 -8 -10 0 0Z"/></g>
+    <g transform="translate(70,125) rotate(-55)"><path class="leaf" d="M0 0 C8 -10 8 -28 0 -36 C-8 -28 -8 -10 0 0Z"/></g>
+    <g transform="translate(72,122) rotate(20)"><path class="leaf" d="M0 0 C8 -10 8 -28 0 -36 C-8 -28 -8 -10 0 0Z"/></g>
+    <g transform="translate(100,85) rotate(-35)"><path class="leaf" d="M0 0 C8 -10 8 -28 0 -36 C-8 -28 -8 -10 0 0Z"/></g>
+    <g transform="translate(102,82) rotate(40)"><path class="leaf" d="M0 0 C8 -10 8 -28 0 -36 C-8 -28 -8 -10 0 0Z"/></g>
+    <g transform="translate(122,40)">
+      <circle class="bloom" r="6"/>
+      <circle class="core" r="2.4"/>
+    </g>
+  </svg>
+  <svg class="sprig br" viewBox="0 0 160 220" aria-hidden="true">
+    <path class="draw" pathLength="1" d="M20 210 C30 150 60 110 120 40"/>
+    <g transform="translate(40,160) rotate(-40)"><path class="leaf" d="M0 0 C8 -10 8 -28 0 -36 C-8 -28 -8 -10 0 0Z"/></g>
+    <g transform="translate(40,160) rotate(30)"><path class="leaf" d="M0 0 C8 -10 8 -28 0 -36 C-8 -28 -8 -10 0 0Z"/></g>
+    <g transform="translate(70,125) rotate(-55)"><path class="leaf" d="M0 0 C8 -10 8 -28 0 -36 C-8 -28 -8 -10 0 0Z"/></g>
+    <g transform="translate(72,122) rotate(20)"><path class="leaf" d="M0 0 C8 -10 8 -28 0 -36 C-8 -28 -8 -10 0 0Z"/></g>
+    <g transform="translate(100,85) rotate(-35)"><path class="leaf" d="M0 0 C8 -10 8 -28 0 -36 C-8 -28 -8 -10 0 0Z"/></g>
+    <g transform="translate(102,82) rotate(40)"><path class="leaf" d="M0 0 C8 -10 8 -28 0 -36 C-8 -28 -8 -10 0 0Z"/></g>
+    <g transform="translate(122,40)">
+      <circle class="bloom" r="6"/>
+      <circle class="core" r="2.4"/>
+    </g>
+  </svg>
+  <div class="hero-bg" id="heroBg"></div>
+  <div id="glow"></div>
+  <div class="hero-inner">
+    <div class="om" data-hero>ॐ</div>
+    <div class="hero-tag" data-hero id="heroTag"></div>
+    <div class="names-box" data-hero>
+      <svg class="frame" viewBox="0 0 520 200" preserveAspectRatio="none" aria-hidden="true">
+        <rect x="2" y="2" width="516" height="196" rx="26" pathLength="1"/>
+      </svg>
+      <div class="names"><span id="groom"></span><span class="amp">&amp;</span><span id="bride"></span></div>
+    </div>
+  </div>
+  <div class="scroll-hint" data-hero>नीचे स्क्रॉल करें<span class="scroll-line"></span></div>
+</header>
+
+<main>
+  <section>
+    <div class="kicker" data-anim="up">आमंत्रण</div>
+    <h2 data-split id="inviteHead"></h2>
+    <div class="orn" data-orn><svg viewBox="0 0 220 26"><path pathLength="1" d="M0 13 H88 M132 13 H220"/><path class="dia" d="M110 3 L121 13 L110 23 L99 13 Z"/></svg></div>
+    <p class="msg" id="msg"></p>
+    <p class="date-line" data-anim="up" id="dateText"></p>
+    <div class="countdown" data-stagger>
+      <div class="cd"><b id="cdD">00</b><small>दिन</small></div>
+      <div class="cd"><b id="cdH">00</b><small>घंटे</small></div>
+      <div class="cd"><b id="cdM">00</b><small>मिनट</small></div>
+      <div class="cd"><b id="cdS">00</b><small>सेकंड</small></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="kicker" data-anim="up">कार्यक्रम</div>
+    <h2 data-split>उत्सव के पल</h2>
+    <div class="timeline" id="timeline">
+      <div class="track"></div>
+      <div class="track-fill" id="trackFill"></div>
+      <div id="events"></div>
+    </div>
+  </section>
+
+  <section id="galSection">
+    <div class="kicker" data-anim="up">यादें</div>
+    <h2 data-split>हमारी तस्वीरें</h2>
+    <div class="gallery" id="gallery"></div>
+  </section>
+
+  <section>
+    <div class="venue" data-anim="zoom">
+      <div class="kicker" style="color:var(--gold-l)">स्थल</div>
+      <h2 id="venueName"></h2>
+      <p id="address"></p>
+      <a class="btn" id="mapLink" target="_blank" rel="noopener">नक्शा देखें</a>
+    </div>
+  </section>
+
+  <section>
+    <div class="kicker" data-anim="left">कृपया पधारें</div>
+    <h2 data-split id="rsvpHead"></h2>
+    <p class="msg" data-anim="up" style="font-size:19px">आपकी उपस्थिति हमारे लिए बहुत मायने रखती है।</p>
+    <a class="btn" id="callBtn" data-anim="zoom"></a>
+  </section>
+</main>
+
+<footer data-anim="up">
+  <div class="temple-art" aria-hidden="true">
+    <svg viewBox="0 0 400 180">
+      <path class="draw" pathLength="1" d="M8 165 H392"/>
+      <g>
+        <path class="draw" pathLength="1" d="M30 165 V112 H90 V165"/>
+        <path class="draw" pathLength="1" d="M36 112 V98 H84 V112"/>
+        <path class="draw" pathLength="1" d="M42 98 V84 H78 V98"/>
+        <path class="draw" pathLength="1" d="M46 84 Q52 58 60 40 Q68 58 74 84"/>
+        <path class="draw" pathLength="1" d="M50 165 V138 a10 10 0 0 1 20 0 V165"/>
+        <path class="draw" pathLength="1" d="M57 36 a3 3 0 1 0 6 0 a3 3 0 1 0 -6 0"/>
+      </g>
+      <g transform="translate(400,0) scale(-1,1)">
+        <path class="draw" pathLength="1" d="M30 165 V112 H90 V165"/>
+        <path class="draw" pathLength="1" d="M36 112 V98 H84 V112"/>
+        <path class="draw" pathLength="1" d="M42 98 V84 H78 V98"/>
+        <path class="draw" pathLength="1" d="M46 84 Q52 58 60 40 Q68 58 74 84"/>
+        <path class="draw" pathLength="1" d="M50 165 V138 a10 10 0 0 1 20 0 V165"/>
+        <path class="draw" pathLength="1" d="M57 36 a3 3 0 1 0 6 0 a3 3 0 1 0 -6 0"/>
+      </g>
+      <g transform="translate(104,121)">
+        <path class="draw" pathLength="1" d="M8 20 q-6 4 -4 11"/>
+        <rect class="fill" x="14" y="30" width="6" height="14" rx="2"/>
+        <rect class="fill" x="22" y="30" width="6" height="14" rx="2"/>
+        <rect class="fill" x="34" y="30" width="6" height="14" rx="2"/>
+        <rect class="fill" x="42" y="30" width="6" height="14" rx="2"/>
+        <ellipse class="fill" cx="30" cy="24" rx="22" ry="14"/>
+        <circle class="fill" cx="50" cy="14" r="10"/>
+        <ellipse class="fill" cx="43" cy="18" rx="7" ry="10"/>
+        <path class="draw" pathLength="1" d="M57 16 Q67 24 63 35 Q61 39 57 36" style="stroke-width:4"/>
+        <path class="draw" pathLength="1" d="M56 22 q6 2 8 8"/>
+        <circle cx="54" cy="11" r="1.6" fill="#7a6a3a" stroke="none"/>
+      </g>
+      <g transform="translate(296,121) scale(-1,1)">
+        <path class="draw" pathLength="1" d="M8 20 q-6 4 -4 11"/>
+        <rect class="fill" x="14" y="30" width="6" height="14" rx="2"/>
+        <rect class="fill" x="22" y="30" width="6" height="14" rx="2"/>
+        <rect class="fill" x="34" y="30" width="6" height="14" rx="2"/>
+        <rect class="fill" x="42" y="30" width="6" height="14" rx="2"/>
+        <ellipse class="fill" cx="30" cy="24" rx="22" ry="14"/>
+        <circle class="fill" cx="50" cy="14" r="10"/>
+        <ellipse class="fill" cx="43" cy="18" rx="7" ry="10"/>
+        <path class="draw" pathLength="1" d="M57 16 Q67 24 63 35 Q61 39 57 36" style="stroke-width:4"/>
+        <path class="draw" pathLength="1" d="M56 22 q6 2 8 8"/>
+        <circle cx="54" cy="11" r="1.6" fill="#7a6a3a" stroke="none"/>
+      </g>
+      <g transform="translate(200,160)">
+        <path class="lotus" d="M0 0 C-7 -4 -7 -16 0 -20 C7 -16 7 -4 0 0Z"/>
+        <path class="lotus" transform="rotate(-38)" d="M0 0 C-7 -4 -7 -16 0 -20 C7 -16 7 -4 0 0Z"/>
+        <path class="lotus" transform="rotate(38)" d="M0 0 C-7 -4 -7 -16 0 -20 C7 -16 7 -4 0 0Z"/>
+      </g>
+    </svg>
+  </div>
+  <div class="names-foot" id="footNames"></div>
+  <small>आपका आशीर्वाद ही सबसे बड़ा उपहार है ✦</small>
+</footer>
+
+<script>
+/* ---------- helpers & content ---------- */
+const $ = id => document.getElementById(id);
+const hasGSAP = typeof gsap !== "undefined";
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const isTouch = matchMedia("(hover: none)").matches;
+
+$("gateTitle").textContent = CONFIG.tagline;
+$("heroTag").textContent = CONFIG.tagline;
+splitLetters($("groom"), CONFIG.groom);
+splitLetters($("bride"), CONFIG.bride);
+function splitLetters(el, text){
+  el.setAttribute("aria-label", text);
+  const seg = window.Intl && Intl.Segmenter
+    ? [...new Intl.Segmenter("hi", { granularity: "grapheme" }).segment(text)].map(s => s.segment)
+    : Array.from(text);
+  el.innerHTML = seg.map(c => `<span class="ch" aria-hidden="true">${c === " " ? "&nbsp;" : c}</span>`).join("");
+}
+$("inviteHead").textContent = CONFIG.invite;
+$("dateText").textContent = CONFIG.dateText;
+$("venueName").textContent = CONFIG.venue;
+$("address").textContent = CONFIG.address;
+$("mapLink").href = "https://www.google.com/maps/search/?api=1&query=" + CONFIG.mapQuery;
+$("rsvpHead").textContent = CONFIG.rsvpFrom + " की ओर से";
+$("callBtn").href = "tel:" + CONFIG.phone;
+$("callBtn").textContent = "कॉल करें · " + CONFIG.phoneText;
+$("footNames").textContent = CONFIG.groom + " ♥ " + CONFIG.bride;
+
+// split heading words so they can animate in one by one
+document.querySelectorAll("[data-split]").forEach(h => {
+  h.setAttribute("aria-label", h.textContent);
+  h.innerHTML = h.textContent.split(" ").map(w => `<span class="sw" aria-hidden="true">${w}</span>`).join(" ");
+});
+
+// message words light up on scroll
+$("msg").innerHTML = CONFIG.message.split(" ").map(w => `<span class="w">${w}</span>`).join(" ");
+
+// events
+CONFIG.events.forEach(ev => {
+  const d = document.createElement("div");
+  d.className = "event";
+  d.innerHTML = `<div class="icon">${ev.icon}</div><h3>${ev.name}</h3><div class="when">${ev.when}</div>`;
+  $("events").appendChild(d);
+});
+
+// gallery (real photos if provided, otherwise elegant placeholders)
+const gal = $("gallery");
+if (CONFIG.gallery.length) {
+  CONFIG.gallery.forEach(p => {
+    const t = document.createElement("div"); t.className = "tile";
+    t.innerHTML = `<img src="${p.src}" alt="${p.alt || ""}" loading="lazy">`;
+    gal.appendChild(t);
+  });
+} else {
+  $("galSection").style.display = "none";
+}
+
+// music
+if (CONFIG.music) {
+  const a = $("bgm"); a.src = CONFIG.music;
+  const b = $("musicBtn"); b.classList.add("show");
+  let on = false;
+  b.addEventListener("click", () => {
+    on = !on;
+    on ? a.play().catch(() => {}) : a.pause();
+    b.classList.toggle("on", on);
+  });
+}
+
+/* ---------- petals ---------- */
+(function petals(){
+  if (reduce) return;
+  const cv = $("petals"), cx = cv.getContext("2d");
+  const COLS = ["251,190,200","236,130,120","246,190,80","240,160,60"]; // rose & marigold
+  let W, H; const P = [];
+  const N = innerWidth < 600 ? 16 : 30;
+  const size = () => { W = cv.width = innerWidth; H = cv.height = cv.parentElement.offsetHeight; };
+  const mk = init => { const depth = Math.random(); return {
+    x: Math.random()*innerWidth, y: init ? Math.random()*innerHeight : -30,
+    s: 3 + depth*5 + Math.random()*2,          // nearer petals are larger
+    vy: .35 + depth*.6 + Math.random()*.2,     // and fall faster
+    a: .35 + depth*.4, depth,
+    c: COLS[(Math.random()*COLS.length)|0],
+    rot: Math.random()*6.28, vr: (Math.random()-.5)*.02,
+    ph: Math.random()*6.28, sw: .3 + Math.random()*.5 }; };
+  size(); addEventListener("resize", size);
+  for (let i = 0; i < N; i++) P.push(mk(true));
+  (function draw(){
+    cx.clearRect(0, 0, W, H);
+    for (const p of P) {
+      p.y += p.vy; p.ph += .015; p.x += Math.sin(p.ph) * p.sw; p.rot += p.vr;
+      if (p.y > H + 30) Object.assign(p, mk(false));
+      cx.save(); cx.translate(p.x, p.y); cx.rotate(p.rot);
+      cx.globalAlpha = p.a * (p.depth < .3 ? .55 : 1); // distant petals softer
+      cx.fillStyle = `rgba(${p.c},1)`;
+      cx.beginPath(); cx.ellipse(0, 0, p.s, p.s*.6, 0, 0, 6.283); cx.fill();
+      cx.restore();
+    }
+    requestAnimationFrame(draw);
+  })();
+})();
+
+/* ---------- gate + hero intro ---------- */
+const gate = $("gate"), body = document.body;
+if (hasGSAP && reduce) gsap.globalTimeline.timeScale(20);
+if (!reduce) {
+  for (let i = 0; i < 16; i++) {
+    const d = document.createElement("i"); d.className = "dust";
+    d.style.left = (Math.random()*100) + "%";
+    d.style.top = (30 + Math.random()*65) + "%";
+    d.style.setProperty("--d", (6 + Math.random()*6) + "s");
+    d.style.setProperty("--dl", (-Math.random()*8) + "s");
+    d.style.setProperty("--dx", ((Math.random()-.5)*60) + "px");
+    d.style.width = d.style.height = (2 + Math.random()*2.5) + "px";
+    gate.appendChild(d);
+  }
+}
+
+function heroIntro(){
+  gsap.timeline()
+    .from("#heroBg", { scale: 1.12, opacity: 0, duration: 2.6, ease: "power2.out" }, 0)
+    .from(".om", { scale: .3, opacity: 0, rotate: -40, duration: 1.2, ease: "back.out(1.6)" })
+    .from(".hero-tag", { y: 16, opacity: 0, letterSpacing: "12px", duration: 1.1, ease: "power3.out" }, "-=.6")
+    .from(".frame rect", { strokeDashoffset: 1, duration: 1.8, ease: "power2.inOut" }, "-=.6")
+    .from(".names .ch, .names .amp", { y: 36, opacity: 0, scale: .92, filter: "blur(10px)", duration: 1.1, stagger: .035, ease: "power3.out" }, "-=1.4")
+    .from(".scroll-hint", { opacity: 0, duration: 1 }, "-=.4");
+
+  // botanical sprigs grow in alongside the names
+  gsap.timeline()
+    .from(".sprig .draw", { strokeDashoffset: 1, duration: 2.4, ease: "power2.inOut", stagger: .2 }, 0.3)
+    .from(".sprig .leaf", { scale: 0, opacity: 0, transformOrigin: "50% 100%", duration: .9, stagger: .12, ease: "back.out(1.4)" }, 1.1)
+    .from(".sprig .bloom, .sprig .core", { scale: 0, opacity: 0, transformOrigin: "50% 50%", duration: .8, stagger: .1, ease: "back.out(2)" }, 2.2);
+}
+
+function openGate(){
+  if (CONFIG.music) { const a = $("bgm"); const b = $("musicBtn"); a.play().then(() => b.classList.add("on")).catch(() => {}); }
+  if (!hasGSAP) { gate.style.display = "none"; body.classList.remove("locked"); return; }
+  gsap.timeline({ onComplete(){ gate.style.display = "none"; body.classList.remove("locked"); ScrollTrigger.refresh(); } })
+    .to("#openBtn", { scale: 0, opacity: 0, duration: .5, ease: "back.in(2)" })
+    .to(".gate-title, .gate-hint", { opacity: 0, y: -10, duration: .4 }, "<")
+    .to(".light", { opacity: 1, duration: .7, ease: "power2.out" }, "-=.2")
+    .to(".door.left",  { rotateY: -112, duration: 1.9, ease: "power3.inOut" }, "-=.3")
+    .to(".door.right", { rotateY:  112, duration: 1.9, ease: "power3.inOut" }, "<")
+    .to(gate, { opacity: 0, duration: .8, ease: "power1.out" }, "-=.6")
+    .add(heroIntro, "-=1.2");
+}
+$("openBtn").addEventListener("click", openGate);
+
+// soft ripple from the touch point on buttons
+document.querySelectorAll(".btn, .gate-btn").forEach(el => {
+  el.addEventListener("pointerdown", e => {
+    if (reduce) return;
+    const r = el.getBoundingClientRect(), s = document.createElement("span");
+    s.className = "ripple";
+    s.style.left = (e.clientX - r.left) + "px";
+    s.style.top = (e.clientY - r.top) + "px";
+    el.appendChild(s);
+    setTimeout(() => s.remove(), 750);
+  });
+});
+
+/* ---------- GSAP-driven page ---------- */
+if (hasGSAP) {
+  gsap.registerPlugin(ScrollTrigger);
+
+  // gate button idle breathing
+  gsap.to("#openBtn", { scale: 1.06, repeat: -1, yoyo: true, duration: 1.4, ease: "sine.inOut" });
+
+  // scroll progress bar
+  gsap.to("#progress", { scaleX: 1, ease: "none",
+    scrollTrigger: { trigger: document.documentElement, start: "top top", end: "bottom bottom", scrub: true } });
+
+  // hero parallax
+  gsap.to("#heroBg", { yPercent: 25, ease: "none",
+    scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
+  gsap.to(".hero-inner", { yPercent: -12, opacity: .2, ease: "none",
+    scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
+
+  // generic reveals
+  gsap.utils.toArray("[data-anim]").forEach(el => {
+    const t = el.dataset.anim;
+    const v = { opacity: 0, filter: "blur(6px)", duration: 1.2, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 88%" } };
+    if (t === "up") v.y = 50;
+    if (t === "left") v.x = -90;
+    if (t === "right") v.x = 90;
+    if (t === "zoom") { v.scale = .96; v.y = 20; }
+    gsap.from(el, v);
+  });
+
+  // split headings: words rise in one by one
+  gsap.utils.toArray("[data-split]").forEach(h => {
+    gsap.from(h.querySelectorAll(".sw"), { y: 36, opacity: 0, filter: "blur(6px)", duration: .9, stagger: .12, ease: "power3.out",
+      scrollTrigger: { trigger: h, start: "top 88%" } });
+  });
+
+  // ornament line draws itself
+  gsap.from("[data-orn] path", { strokeDashoffset: 1, duration: 1.4, ease: "power2.inOut", stagger: .15,
+    scrollTrigger: { trigger: "[data-orn]", start: "top 88%" } });
+  gsap.from("[data-orn] .dia", { scale: 0, transformOrigin: "50% 50%", duration: .6, ease: "back.out(2)",
+    scrollTrigger: { trigger: "[data-orn]", start: "top 88%" } });
+
+  // stagger groups
+  gsap.utils.toArray("[data-stagger]").forEach(g => {
+    gsap.from(g.children, { y: 30, opacity: 0, scale: .92, duration: 1, stagger: .15, ease: "back.out(1.4)",
+      scrollTrigger: { trigger: g, start: "top 88%" } });
+  });
+
+  // message words light up while scrolling
+  gsap.to("#msg .w", { opacity: 1, stagger: .08, ease: "none",
+    scrollTrigger: { trigger: "#msg", start: "top 82%", end: "bottom 50%", scrub: true } });
+
+  // timeline
+  gsap.to("#trackFill", { scaleY: 1, ease: "none",
+    scrollTrigger: { trigger: "#timeline", start: "top 70%", end: "bottom 60%", scrub: true } });
+  gsap.utils.toArray(".event").forEach((ev, i) => {
+    gsap.from(ev, { x: i % 2 ? 60 : -60, opacity: 0, duration: 1, ease: "power3.out",
+      scrollTrigger: { trigger: ev, start: "top 85%" } });
+  });
+
+  // gallery: each tile opens like a curtain
+  gsap.utils.toArray(".tile").forEach((t, i) => {
+    gsap.from(t, { clipPath: "inset(0 0 100% 0 round 16px)", duration: 1.1, delay: (i % 2) * .15, ease: "power3.inOut",
+      scrollTrigger: { trigger: t, start: "top 90%" } });
+  });
+
+  // temple & elephants: outlines draw in, then the figures settle
+  gsap.from(".temple-art .draw", { strokeDashoffset: 1, duration: 2, ease: "power2.inOut", stagger: .05,
+    scrollTrigger: { trigger: ".temple-art", start: "top 90%" } });
+  gsap.from(".temple-art .fill, .temple-art .lotus", { opacity: 0, y: 8, duration: 1.2, stagger: .04, ease: "power2.out",
+    scrollTrigger: { trigger: ".temple-art", start: "top 90%" } });
+
+  // venue frame glow
+  gsap.from(".venue", { boxShadow: "0 0 0 rgba(0,0,0,0)", duration: 1.6,
+    scrollTrigger: { trigger: ".venue", start: "top 85%" } });
+
+  // hover effects (desktop only)
+  if (!isTouch) {
+    document.querySelectorAll(".event").forEach(el => {
+      el.addEventListener("mousemove", e => {
+        const r = el.getBoundingClientRect();
+        gsap.to(el, { rotateY: ((e.clientX - r.left) / r.width - .5) * 8,
+          rotateX: -((e.clientY - r.top) / r.height - .5) * 8, transformPerspective: 900, duration: .5, ease: "power2.out" });
+      });
+      el.addEventListener("mouseleave", () => gsap.to(el, { rotateX: 0, rotateY: 0, duration: .8, ease: "elastic.out(1,.5)" }));
+    });
+    document.querySelectorAll(".btn, .gate-btn").forEach(el => {
+      el.addEventListener("mousemove", e => {
+        const r = el.getBoundingClientRect();
+        gsap.to(el, { x: (e.clientX - r.left - r.width/2) * .25, y: (e.clientY - r.top - r.height/2) * .25, duration: .4, ease: "power2.out" });
+      });
+      el.addEventListener("mouseleave", () => gsap.to(el, { x: 0, y: 0, duration: .8, ease: "elastic.out(1,.4)" }));
+    });
+    // soft golden glow follows the cursor over the hero
+    const glow = $("glow"), hero = document.querySelector(".hero");
+    hero.addEventListener("mousemove", e => {
+      const r = hero.getBoundingClientRect();
+      gsap.to(glow, { x: e.clientX - r.left, y: e.clientY - r.top, duration: .6, ease: "power2.out" });
+    });
+  } else {
+    $("glow").style.display = "none";
+  }
+} else {
+  gate.style.display = "none";
+  body.classList.remove("locked");
+  $("glow").style.display = "none";
+}
+
+/* ---------- countdown ---------- */
+const target = new Date(CONFIG.weddingDate).getTime();
+const pad = n => String(n).padStart(2, "0");
+function setVal(el, v){
+  if (el.textContent === v) return;
+  el.textContent = v;
+  if (hasGSAP) gsap.fromTo(el, { y: -10, opacity: .2 }, { y: 0, opacity: 1, duration: .45, ease: "power2.out" });
+}
+function tick(){
+  const diff = Math.max(0, target - Date.now());
+  setVal($("cdD"), pad(Math.floor(diff / 864e5)));
+  setVal($("cdH"), pad(Math.floor(diff / 36e5) % 24));
+  setVal($("cdM"), pad(Math.floor(diff / 6e4) % 60));
+  setVal($("cdS"), pad(Math.floor(diff / 1e3) % 60));
+}
+tick(); setInterval(tick, 1000);
+</script>
+</body>
+</html>
